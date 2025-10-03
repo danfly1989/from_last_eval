@@ -81,6 +81,8 @@ static void	ft_execve_error(char *cmd)
 	exit(code);
 }
 
+/*The prints in !cmd path were causing garbled fd
+piped output. They were removed*/
 void	ft_exec_command(t_dat *d, char **cmd)
 {
 	char	*cmd_path;
@@ -94,12 +96,7 @@ void	ft_exec_command(t_dat *d, char **cmd)
 	}
 	cmd_path = ft_get_cmd_path(d, cmd[0], 0);
 	if (!cmd_path)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd[0], 2);
-		ft_putendl_fd(": command not found", 2);
 		exit(127);
-	}
 	execve(cmd_path, cmd, d->evs);
 	free(cmd_path);
 	ft_execve_error(cmd[0]);
