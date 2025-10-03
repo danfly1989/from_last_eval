@@ -48,6 +48,11 @@ char	*ft_get_cmd_path(t_dat *d, const char *cmd, int i)
 	return (NULL);
 }
 
+/*Exit removed to ensure parent can call this function.
+Incremental change that could be made without breaking
+test results. This was the final step in prepping child.c
+changes for our fd printing race condition with multiple
+piples*/
 void	ft_cmd_not_found(char *cmd)
 {
 	char	*prefix;
@@ -58,7 +63,6 @@ void	ft_cmd_not_found(char *cmd)
 	write(2, prefix, ft_strlen(prefix));
 	write(2, cmd, ft_strlen(cmd));
 	write(2, suffix, ft_strlen(suffix));
-	exit(127);
 }
 
 void	ft_cmd_error(t_dat *data, char *line)
