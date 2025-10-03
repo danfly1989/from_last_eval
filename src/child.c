@@ -109,32 +109,35 @@ void	ft_wait_children(pid_t *pids, int tot, int last_index, char ***cmd)
 	while (i < tot)
 	{
 		waited = waitpid(-1, &status, 0);
-		if (WIFSIGNALED(status))
+		if (pids[i] != -1)
 		{
-			signal_num = WTERMSIG(status);
-			if (signal_num == SIGQUIT)
+			if (WIFSIGNALED(status))
 			{
-				printf("quit: core dumped\n"), g_last_exit_status = 131;
+				signal_num = WTERMSIG(status);
+				if (signal_num == SIGQUIT)
+				{
+					printf("quit: core dumped\n"), g_last_exit_status = 131;
+				}
+				else if (signal_num == SIGINT)
+				{
+					(write(1, "\n", 1), g_last_exit_status = 130);
+				}
+				else if (waited == pids[last_index])
+					g_last_exit_status = 128 + signal_num;
 			}
-			else if (signal_num == SIGINT)
+			else if (WIFEXITED(status))
 			{
-				(write(1, "\n", 1), g_last_exit_status = 130);
+				if (exit_code == 127 && cmd[i] && cmd[i][0])
+					ft_cmd_not_found(cmd[i][0]);
+				else if (exit_code == 126 && cmd[i] && cmd[i][0])
+				{
+					ft_putstr_fd("minishell: ", 2);
+					ft_putstr_fd(cmd[i][0], 2);
+					ft_putendl_fd(": Is a directory", 2);
+				}
+				if (waited == pids[last_index])
+					g_last_exit_status = WEXITSTATUS(status);
 			}
-			else if (waited == pids[last_index])
-				g_last_exit_status = 128 + signal_num;
-		}
-		else if (WIFEXITED(status))
-		{
-			if (exit_code == 127 && cmd[i] && cmd[i][0])
-				ft_cmd_not_found(cmd[i][0]);
-			else if (exit_code == 126 && cmd[i] && cmd[i][0])
-			{
-				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(cmd[i][0], 2);
-				ft_putendl_fd(": Is a directory", 2);
-			}
-			if (waited == pids[last_index])
-				g_last_exit_status = WEXITSTATUS(status);
 		}
 		i++;
 	}
