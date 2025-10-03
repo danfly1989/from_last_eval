@@ -102,13 +102,12 @@ void	ft_wait_children(pid_t *pids, int tot, int last_index, char ***cmd)
 	pid_t	waited;
 	int		exit_code;
 
-	exit_code = 0;
 	signal(SIGINT, SIG_IGN);
 	(void)cmd;
 	i = 0;
 	while (i < tot)
 	{
-		waited = waitpid(-1, &status, 0);
+		waited = waitpid(pids[i], &status, 0);
 		if (pids[i] != -1)
 		{
 			if (WIFSIGNALED(status))
@@ -127,6 +126,7 @@ void	ft_wait_children(pid_t *pids, int tot, int last_index, char ***cmd)
 			}
 			else if (WIFEXITED(status))
 			{
+				exit_code = WEXITSTATUS(status);
 				if (exit_code == 127 && cmd[i] && cmd[i][0])
 					ft_cmd_not_found(cmd[i][0]);
 				else if (exit_code == 126 && cmd[i] && cmd[i][0])
