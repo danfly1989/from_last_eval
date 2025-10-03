@@ -184,7 +184,7 @@ pid_t							*ft_fork_children(t_dat *d, char ***cmd,
 									int **fd);
 void							ft_close_pipes(int **fd, int tot);
 void							ft_wait_children(pid_t *pids, int tot,
-									int last_index);
+									int last_index, char ***cmd);
 void							ft_execute_pipeline(t_dat *d, char ***cmd);
 int								ft_parse_redirection(char **tokens, t_rdr *r);
 int								ft_apply_redirections(t_rdr *r, char **tokens);

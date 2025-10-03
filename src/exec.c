@@ -33,7 +33,9 @@ static int	find_last_index(t_dat *d, char ***cmd)
 /*This function was modified to pass the last pid
 index and pass it to wait_children, allowing for more
 accurate pid tracking, allowing us to pass the last
-few tests (which were failing at random intervals)*/
+few tests (which were failing at random intervals).
+The call to wait_children needed to be modified after
+to take the cmd argument and ensure parent error print*/
 void	ft_execute_pipeline(t_dat *d, char ***cmd)
 {
 	int		**fd;
@@ -57,7 +59,7 @@ void	ft_execute_pipeline(t_dat *d, char ***cmd)
 	}
 	pids = ft_fork_children(d, cmd, fd);
 	ft_close_pipes(fd, d->tot);
-	ft_wait_children(pids, d->tot, last_index);
+	ft_wait_children(pids, d->tot, last_index, cmd);
 	ft_set_main_signals();
 	ft_free_fd(fd);
 	free(pids);

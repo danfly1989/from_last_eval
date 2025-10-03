@@ -94,13 +94,14 @@ The temp last_exit_code variable was also removed because signals
 were simply never following that logic and it only randomly held
 the true last on occasion. It was incapable of dealing with
 their asynchronous nature */
-void	ft_wait_children(pid_t *pids, int tot, int last_index)
+void	ft_wait_children(pid_t *pids, int tot, int last_index, char ***cmd)
 {
 	int		status;
 	int		i;
 	int		signal_num;
 	pid_t	waited;
 
+	(void)cmd;
 	i = 0;
 	while (i < tot)
 	{
