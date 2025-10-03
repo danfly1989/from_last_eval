@@ -60,12 +60,25 @@ void	ft_reset_iterators(t_dat *data)
 	data->st = 0;
 }
 
+/*The j part was added to ensure closing of pipes
+after dup2. An incremental change that could be
+added without breaking
+anything. Opening counts up. Closing counts down.*/
 void	ft_setup_io(int **fd, size_t i, size_t total)
 {
+	size_t	j;
+
 	if (i > 0)
 		dup2(fd[i - 1][0], STDIN_FILENO);
 	if (i < total - 1)
 		dup2(fd[i][1], STDOUT_FILENO);
+	j = 0;
+	while (j < total - 1)
+	{
+		close(fd[j][0]);
+		close(fd[j][1]);
+		j++;
+	}
 }
 
 int	**init_fd_array(int tot)
